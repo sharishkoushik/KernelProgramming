@@ -1,0 +1,93 @@
+Objective: 
+        - How to use timers, workqueues and ioctl
+	- How to invoke ioctl of another driver from your driver.
+
+Objective here is to demo how Linux timer API can be used to control keyboard 
+LEDs. We are not concerned about how virtual console and keyboard drivers 
+are implemented. If interested learning about these drivers, please review 
+source code.
+
+I have provided helloplus.c to help with converting blinkplus into a complete driver
+
+Instruction:
+
+        - Compile blinkplus.c and helloplus.c  using Makefile provided earlier
+ 	- insmod blinkplus.ko. keyboard LEDs should start blinking
+        - If your keyboard does not have LEDs (NUM, LOCK, CAP), then monitor syslog.
+	   # tail -f /var/log/syslog
+
+Now it is your turn:
+	- Add iocts to control:
+		LEDs blinking interval, call it SETINV
+	        GET interval of blinking LEDs, call it GETINV
+		Blink individual LED (CAP, SCROLL, NUM),  call it SETLED
+        - There are several ways to control blinking of a CAP, SCROLL and NUM
+          LEDs. One simple way to do it is:
+                CAP: ALL_LEDS_ON & 0x01
+                SCROLL: ALL_LEDS_ON & 0x02
+                NUM: ALL_LEDS_ON & 0x04
+	- Test program test_blinkplus.c is provided to test blinkplus driver
+	- Use workqueues to avoid grabbing the BKL (Big Kernel Lock) from the kernel timer
+	  function (interrupt context). That means do not invoke ioctl from 
+	  the timer function, instead write a work function, link it to the 
+	  work queue and let kernel worker thread executes the ioctl in the 
+	  process context
+How to write work queue
+-----------------------
+- Embed a work_struct in a blink_s structure
+typedef struct blink_s {
+	unsigned int               status;
+        unsigned long              blink_delay;
+        struct work_struct         wk;    // work
+        struct workqueue_struct  * wq;     // work queue
+} blink_info_t;	
+
+- Write a work function that will invoke keyboard ioctl instead
+/*
+ * Write the work function that invokes the ioctl instead of running it 
+ * from timer function
+ */
+static void do_work (struct work_struct * work)
+{
+        blink_info_t * info = container_of(work, blink_info_t, wk);
+        unsigned int *pstatus = (unsigned int *)&info->status;
+
+        if (*pstatus == ledstatus)
+              *pstatus = RESTORE_LEDS;
+        else
+            *pstatus =  ledstatus;
+
+        printk (KERN_INFO "\n *pstatus:%d  ledstatus:%d", *pstatus,ledstatus);
+
+         (my_driver->ops->ioctl) (vc_cons[fg_console].d->port.tty, KDSETLED, *pstatus);
+}
+
+- In the timer function, schedule or queue the work to be executed by worker threads
+static void my_timer_func(unsigned long ptr)
+{
+        blink_info_t * info = (blink_info_t *) ptr;
+
+        printk(KERN_INFO "\nin my_timer_func - %lu, info: %d\n", jiffies, info->status);
+
+        // schedule_work (&info->wk);   // system wide work queue
+
+        // For dedicated work queue
+         queue_work(info->wq, &info->wk);
+
+        my_timer.expires = jiffies + info->blink_delay;
+        add_timer(&my_timer);
+        printk(KERN_INFO "\nblinkplus: timer %lu %lu\n",jiffies,my_timer.expires);
+}
+
+-----------
+
+	- Convert it into complete character driver (see sample helloplus.c):
+		Dynamic allocation of major number 
+	        Device node management via device_create() and
+		class_creat() API
+	- Test with the user program test_blinkplus.c provided
+
+What to submit:
+        Source code
+        README: Details of your program. Output of your test run.
+

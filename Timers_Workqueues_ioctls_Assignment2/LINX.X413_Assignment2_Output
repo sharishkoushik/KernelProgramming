@@ -1,0 +1,83 @@
+root@S:/home/sharishkoushik/Desktop/Assignments/Assignment2# ./test_blinkplus 
+Entered the while loop
+
+ Setting SCROLL LOCK
+
+ Setting NUM LOCK
+
+ Setting CAPS LOCK
+
+ Setting ALL LEDS
+
+GETTING LED BLINK INTERVAL
+LED IS BLINKING AT INTERVAL: 7 (sec)
+
+ Setting LED BLINK INTERVAL to 2 seconds
+Entered the while loop
+
+ Setting SCROLL LOCK
+
+ Setting NUM LOCK
+
+ Setting CAPS LOCK
+
+ Setting ALL LEDS
+
+GETTING LED BLINK INTERVAL
+LED IS BLINKING AT INTERVAL: 7 (sec)
+
+ Setting LED BLINK INTERVAL to 3 seconds
+Entered the while loop
+
+ Setting SCROLL LOCK
+
+ Setting NUM LOCK
+
+ Setting CAPS LOCK
+
+ Setting ALL LEDS
+
+GETTING LED BLINK INTERVAL
+LED IS BLINKING AT INTERVAL: 7 (sec)
+
+ Setting LED BLINK INTERVAL to 4 seconds
+root@S:/home/sharishkoushik/Desktop/Assignments/Assignment2# dmesg 
+[83206.019903] kbleds: loading
+[83206.019910] kbleds: fgconsole is 6
+[83206.019913]  console[0/63] #0, tty ffff880129ee1400
+[83206.019916]  console[1/63] #1, tty ffff8800c3a47400
+[83206.019918]  console[2/63] #2, tty ffff880036671c00
+[83206.019920]  console[3/63] #3, tty ffff880128c6a000
+[83206.019922]  console[4/63] #4, tty ffff880128c6ec00
+[83206.019924]  console[5/63] #5, tty ffff8800ba4c8c00
+[83206.019926]  console[6/63] #6, tty ffff8800bcf8a000
+[83206.019928] kbleds: finished scanning consoles
+[83206.019930] kbleds: tty driver magic 5402
+[83206.019935]  blinkplus init - major: 248  
+[83219.194361]  blinkplus blinkplus : open  
+[83219.194419] SETINV : Interval SET
+[83229.205973] SETINV : Interval SET
+[83239.217512] SETINV : Interval SET
+[83249.229069] SETINV : Interval SET
+[83259.240640] GETLED : Interval retrieved
+[83303.232937]  blinkplus blinkplus : close - count  
+[83618.461777]  blinkplus blinkplus : open  
+[83618.461853] SETINV : Interval SET
+[83628.473430] SETINV : Interval SET
+[83638.485012] SETINV : Interval SET
+[83648.496582] SETINV : Interval SET
+[83658.508155] GETLED : Interval retrieved
+[83668.519763] SETLED : Interval SET
+[83678.531315] SETINV : Interval SET
+[83688.542888] SETINV : Interval SET
+[83698.554461] SETINV : Interval SET
+[83708.566034] SETINV : Interval SET
+[83718.577606] GETLED : Interval retrieved
+[83728.589172] SETLED : Interval SET
+[83738.600767] SETINV : Interval SET
+[83748.612326] SETINV : Interval SET
+[83758.623884] SETINV : Interval SET
+[83768.635456] SETINV : Interval SET
+[83778.647028] GETLED : Interval retrieved
+[83788.658618] SETLED : Interval SET
+[83798.670254]  blinkplus blinkplus : close - count  
