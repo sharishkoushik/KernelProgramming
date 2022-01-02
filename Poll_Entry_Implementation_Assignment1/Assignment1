@@ -1,0 +1,78 @@
+Objective: 
+	- How to block user process on device read and write entry points.
+	- How to implement poll() entry point. 
+
+Instruction:
+	- poll.c has device read and poll (POLLIN event) implemented. You 
+	  will be developing device write entry point and poll (POLLOUT event). 
+	  Since device write entry point is not complete, therefore to test 
+	  poll.c provided, you should have a process blocked on a device read 
+	  before writing to the device. To test do the following:
+
+        - Testing device_read entry point:
+	  	- make  (Makefile is provided)
+		- insmod poll.ko
+		- make_device.sh (script is provided)
+		- strace cat </dev/poll_dev   (process blocks on device read)
+		- echo "filling up the buf" >/dev/poll_dev  (device write)
+
+	    - Testing device_poll (POLLIN) entry point:
+		- compile test_pollR.c [# cc test_pollR.c -o test_pollR]
+		- strace ./test_pollR  (process blocks on device poll)
+	    	- echo "filling up the buf" >/dev/poll_dev  (device write)
+
+Now it is your turn:
+	- device_write() in poll.c does not block process on write. 
+	  You need to add code so that process is blocked  when device is full. 
+	- Wake up reader when device has data to read and writer when
+	  there is a space to write
+	- Test device read and device write entry points to see if reader and writer are getting blocked on device empty or full conditions. 
+	- Also, test if the blocked reader and writer are waking up when 
+	  device has data to read and space to write .
+	- Add code in poll entry point to implement POLLOUT event. Allow 
+	  process to poll() two file descriptors that correspond to
+	  device read and write.
+	- Poll returning with POLLIN or POLLOUT event means process
+	  should be able to read and write to the device without blocking. 
+	- Test device_poll using test_pollRW  (Not test_pollR). The program
+	  should complete without blocking. Use strace to see where the 
+	  process is blocked. If it is blocking on read or write, then you
+	  need to fix your driver.
+	- Instead of running make_device.sh script to create device nodes
+	  (/dev/poll_dev), use udev wrapper routines class_create() and 
+	  device_create() to create device nodes dynamically. udev will create 
+	  device nodes at insmod and remove them at rmmod. We will discuss how
+	  udev functions in "Linux Device Model" lecture.  
+	- Modify poll.c to use wait_event_interruptible() instead. This will 
+	  hide all the details of adding process to wait queue and checking
+	  condition for wake up. Please browse source code to see how it is
+	  implemented
+        - Driver is not ready to deal with multiple readers and writers.
+	  Identify areas in the driver code that require work. 
+
+	   Example1:If two processes are blocked on poll and device_poll()
+		    returns POLLIN, both processes will wakeup. Process that
+		    schedules first will read the data, but second one will 
+		    be blocked. Process using poll() should not be blocked
+		    on read and write.
+	   
+
+What to submit:
+	Source code 
+	README: Details of your program. Output of your test run.
+
+More Information:
+
+read() to the device should return when there is even a single byte available to read. Only time read should block a process when there is nothing to read. The same is true for write(). Write should block a process only when there is no room to write. It should not block a process if there is even a single byte room to write.
+
+read()/write() should not return more than what is requested by user. Returning less than what is requested is fine. Please code your driver to behave that way.
+
+It is the user program that should check for partial read and write. If program is trying to read or write certain number of bytes to the device, then it should continue (make multiple read()/write() ) until all the data is transfered.
+
+Test program (testpoll_RW) should not block on read() or write() because there is 
+always bytes to read and room to write considering same program is continuously 
+reading and writing to the device.
+
+Don't confuse read/write system call to the buffer read/write interface 
+(fread(), fwrite() of the standard I/O library. Library provides buffering and hides 
+it from the user partial read/write unless there is an error.

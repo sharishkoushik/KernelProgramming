@@ -1,0 +1,1 @@
+cmd_/home/skoushik/Desktop/Assignment1/poll.ko := ld -r -m elf_x86_64  --build-id=sha1  -T scripts/module.lds -o /home/skoushik/Desktop/Assignment1/poll.ko /home/skoushik/Desktop/Assignment1/poll.o /home/skoushik/Desktop/Assignment1/poll.mod.o;  true

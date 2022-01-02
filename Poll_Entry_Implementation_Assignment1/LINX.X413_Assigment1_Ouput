@@ -1,0 +1,99 @@
+
+Output from the driver log (dmesg)
+====================================
+root@ubuntu20:/home/shk/Desktop# dmesg 
+[63105.295155]  poll_dev init - major: 237  
+[63185.233435]  poll_dev open - count: 1 
+[63185.233470]  poll_dev open - count: 2 
+[63185.233488] poll_dev - POLLIN EVENT:ir=0|iw=0
+[63185.233496] poll_dev - POLLIN EVENT:ir=0|iw=0
+[63185.239872]  poll_dev write - 22 bytes 
+[63185.239889] !!!!! Send signal to READERS to READ !!!!!
+[63185.240128] poll_dev - POLLIN EVENT:ir=0|iw=22
+[63185.240137] poll_dev - POLLIN EVENT:ir=0|iw=22
+[63185.240190] 
+                poll_dev read - 22 bytes 
+[63185.240197] !!!!! Send signal to WRITERS to WRITE !!!!!
+[63185.240201] !!!!! From read ir is 22
+[63185.240341] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.240348] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.240354] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.240359] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.240408] 
+                poll_dev read - 1 bytes 
+[63185.240415] !!!!! Send signal to WRITERS to WRITE !!!!!
+[63185.240419] !!!!! From read ir is 0
+[63185.240790]  poll_dev write - 22 bytes 
+[63185.240801] !!!!! Send signal to READERS to READ !!!!!
+[63185.241405] poll_dev - POLLIN EVENT:ir=0|iw=22
+[63185.241420] poll_dev - POLLIN EVENT:ir=0|iw=22
+[63185.241595] 
+                poll_dev read - 22 bytes 
+[63185.241603] !!!!! Send signal to WRITERS to WRITE !!!!!
+[63185.241607] !!!!! From read ir is 22
+[63185.247567] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.247578] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.247581] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.247584] poll_dev - POLLIN EVENT:ir=22|iw=0
+[63185.247611] 
+                poll_dev read - 1 bytes 
+[63185.247615] !!!!! Send signal to WRITERS to WRITE !!!!!
+[63185.247617] !!!!! From read ir is 0
+[63185.247697]  poll_dev write - 18 bytes 
+[63185.247701] !!!!! Send signal to READERS to READ !!!!!
+[63185.247762] poll_dev - POLLIN EVENT:ir=0|iw=18
+[63185.247765] poll_dev - POLLIN EVENT:ir=0|iw=18
+[63185.247768] poll_dev - POLLIN EVENT:ir=0|iw=18
+[63185.247770] poll_dev - POLLIN EVENT:ir=0|iw=18
+[63185.247792] 
+                poll_dev read - 16 bytes 
+[63185.247858]  poll_dev close - count 1 
+[63185.247867]  poll_dev close - count 0 
+root@ubuntu20:/home/shk/Desktop# 
+
+
+Ouput from test_pollRW:
+========================
+
+root@ubuntu20:/home/shk/Desktop/Assignment1# ./test_pollRW
+fd is writable
+
+ WROTE 22 byte|size of buffer 62
+
+Needs to write addtional 40 bytes
+fd is readable
+
+READ 22 byte: abcdefghijklmnopqrstuv
+
+Needs to read addtional 40 bytes
+fd is readable
+
+READ 1 byte: 
+
+Needs to read addtional 39 bytes
+fd is writable
+
+ WROTE 22 byte|size of buffer 40
+
+Needs to write addtional 18 bytes
+fd is readable
+
+READ 22 byte: wxyz0123456789ABCDEFGH
+
+Needs to read addtional 17 bytes
+fd is readable
+
+READ 1 byte: 
+
+Needs to read addtional 16 bytes
+fd is writable
+
+ WROTE 18 byte|size of buffer 18
+
+ All data is written
+fd is readable
+
+READ 16 byte: IJKLMNOPQRSTUVWX
+
+ALL DATA IS READ. Exiting ...
+root@ubuntu20:/home/shk/Desktop/Assignment1# 
